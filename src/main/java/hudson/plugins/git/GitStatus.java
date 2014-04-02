@@ -226,6 +226,10 @@ public class GitStatus extends AbstractModelObject implements RootAction{
                                 }
                             }
 
+                            if (!repositoryMatches) {
+                                continue;
+                            }
+
                             if (branches.length == 0) {
                                 branchMatches = true;
                             } else {
