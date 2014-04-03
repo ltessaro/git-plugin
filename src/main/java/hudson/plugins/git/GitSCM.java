@@ -160,6 +160,8 @@ public class GitSCM extends SCM implements Serializable {
     private boolean pruneBranches;
     
     private boolean remotePoll;
+    
+    private boolean ignoreNotifyCommit;
 
     /**
      * @deprecated Replaced by {@link #buildChooser} instead.
@@ -211,7 +213,7 @@ public class GitSCM extends SCM implements Serializable {
             Collections.singletonList(new BranchSpec("")),
             new PreBuildMergeOptions(), false, Collections.<SubmoduleConfig>emptyList(), false,
             false, new DefaultBuildChooser(), null, null, false, null,
-            null, null, false, false, false, null, null, false, null);
+            null, null, false, false, false, null, null, false, null, false);
     }
 
     @Deprecated
@@ -255,7 +257,8 @@ public class GitSCM extends SCM implements Serializable {
             gitConfigName,
             gitConfigEmail,
             skipTag,
-            null
+            null,
+            false
         );
         this.relativeTargetDir = relativeTargetDir;
     }
@@ -282,7 +285,33 @@ public class GitSCM extends SCM implements Serializable {
                   boolean skipTag) {
         this(repositories, branches, mergeOptions, doGenerateSubmoduleConfigurations, submoduleCfg, clean,
             wipeOutWorkspace, buildChooser, browser, gitTool, authorOrCommitter, excludedRegions, excludedUsers,
-            localBranch, recursiveSubmodules, pruneBranches, remotePoll, gitConfigName, gitConfigEmail, skipTag, null);
+            localBranch, recursiveSubmodules, pruneBranches, remotePoll, gitConfigName, gitConfigEmail, skipTag, null, false);
+    }
+    
+    @Deprecated
+    public GitSCM(List<RemoteConfig> repositories,
+                  List<BranchSpec> branches,
+                  PreBuildMergeOptions mergeOptions,
+                  boolean doGenerateSubmoduleConfigurations,
+                  Collection<SubmoduleConfig> submoduleCfg,
+                  boolean clean,
+                  boolean wipeOutWorkspace,
+                  BuildChooser buildChooser, GitRepositoryBrowser browser,
+                  String gitTool,
+                  boolean authorOrCommitter,
+                  String excludedRegions,
+                  String excludedUsers,
+                  String localBranch,
+                  boolean recursiveSubmodules,
+                  boolean pruneBranches,
+                  boolean remotePoll,
+                  String gitConfigName,
+                  String gitConfigEmail,
+                  boolean skipTag,
+                  String includedRegions) {
+        this(repositories, branches, mergeOptions, doGenerateSubmoduleConfigurations, submoduleCfg, clean,
+            wipeOutWorkspace, buildChooser, browser, gitTool, authorOrCommitter, excludedRegions, excludedUsers,
+            localBranch, recursiveSubmodules, pruneBranches, remotePoll, gitConfigName, gitConfigEmail, skipTag, includedRegions, false);
     }
 
     @DataBoundConstructor
@@ -305,7 +334,8 @@ public class GitSCM extends SCM implements Serializable {
                   String gitConfigName,
                   String gitConfigEmail,
                   boolean skipTag,
-                  String includedRegions) {
+                  String includedRegions,
+                  boolean ignoreNotifyCommit) {
         this.branches = branches;
 
         this.localBranch = Util.fixEmptyAndTrim(localBranch);
@@ -327,6 +357,7 @@ public class GitSCM extends SCM implements Serializable {
         this.excludedUsers = excludedUsers;
         this.recursiveSubmodules = recursiveSubmodules;
         this.pruneBranches = pruneBranches;
+        this.ignoreNotifyCommit = ignoreNotifyCommit;
         
         if (remotePoll && 
                 (branches.size() != 1
@@ -553,6 +584,10 @@ public class GitSCM extends SCM implements Serializable {
 
     public BuildChooser getBuildChooser() {
         return buildChooser;
+    }
+    
+    public boolean isIgnoreNotifyCommit() {
+        return ignoreNotifyCommit;
     }
 
     /**
@@ -1251,7 +1286,8 @@ public class GitSCM extends SCM implements Serializable {
                 req.getParameter("git.gitConfigName"),
                 req.getParameter("git.gitConfigEmail"),
                 req.getParameter("git.skipTag") != null,
-                req.getParameter("git.includedRegions"));
+                req.getParameter("git.includedRegions"),
+                req.getParameter("git.ignoreNotifyCommit") != null);
         }
 
         @Deprecated
