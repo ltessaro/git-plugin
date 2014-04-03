@@ -226,7 +226,7 @@ public class GitStatus extends AbstractModelObject implements RootAction{
                                 }
                             }
 
-                            if (!repositoryMatches) {
+                            if (!repositoryMatches || git.isIgnoreNotifyCommit()) {
                                 continue;
                             }
 
