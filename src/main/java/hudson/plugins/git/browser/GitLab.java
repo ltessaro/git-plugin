@@ -25,6 +25,9 @@ public class GitLab extends GitRepositoryBrowser {
 
     @DataBoundConstructor
     public GitLab(String repoUrl, String version) throws MalformedURLException {
+        if (repoUrl != null && !repoUrl.endsWith("/")) {
+            repoUrl = repoUrl + "/";
+        }
         this.repoUrl = new URL(repoUrl);
         this.version = Double.valueOf(version);
     }
