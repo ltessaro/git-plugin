@@ -29,7 +29,12 @@ public class GitLab extends GitRepositoryBrowser {
         this.version = Double.valueOf(version);
     }
 
+    @Deprecated
     public URL getUrl() {
+        return repoUrl;
+    }
+
+    public URL getRepoUrl() {
         return repoUrl;
     }
     
@@ -49,7 +54,7 @@ public class GitLab extends GitRepositoryBrowser {
     public URL getChangeSetLink(GitChangeSet changeSet) throws IOException {
         String  commitPrefix;
 
-        return new URL(getUrl(), calculatePrefix() + changeSet.getId().toString());
+        return new URL(getRepoUrl(), calculatePrefix() + changeSet.getId().toString());
     }
 
     /**
@@ -64,7 +69,7 @@ public class GitLab extends GitRepositoryBrowser {
     @Override
     public URL getDiffLink(Path path) throws IOException {
         final GitChangeSet changeSet = path.getChangeSet();
-        return new URL(getUrl(), calculatePrefix() + changeSet.getId().toString() + "#" + path.getPath());
+        return new URL(getRepoUrl(), calculatePrefix() + changeSet.getId().toString() + "#" + path.getPath());
     }
 
     /**
@@ -86,7 +91,7 @@ public class GitLab extends GitRepositoryBrowser {
             } else {
                 spec = path.getChangeSet().getId() + "/tree/" + path.getPath();
             }
-            URL url = getUrl();
+            URL url = getRepoUrl();
             return new URL(url, url.getPath() + spec);
         }
     }
