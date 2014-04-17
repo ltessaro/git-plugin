@@ -76,7 +76,7 @@ public class GitAPI implements IGitAPI {
     private Git jGitDelegate;
     private PersonIdent author;
     private PersonIdent committer;
-
+	
     public GitAPI(String gitExe, FilePath workspace, TaskListener listener, EnvVars environment) {
 
         this.workspace = workspace;
@@ -94,6 +94,17 @@ public class GitAPI implements IGitAPI {
             }
         }
     }
+	
+	/**
+	 * Close the underlying Git object.
+	 * After close, no executable call, e.g., <code>commit</code> is allowed.
+	 */
+	public void close() {
+        if (hasGitRepo()) {
+            jGitDelegate.close();
+            jGitDelegate = null;
+        }
+	}
 
     /**
      * Returns author

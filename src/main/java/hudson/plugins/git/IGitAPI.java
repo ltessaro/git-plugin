@@ -19,6 +19,12 @@ public interface IGitAPI {
     EnvVars getEnvironment();
 
     /**
+     * Close git repository and clean up file handles, etc.
+     * No further use of repository is allowed after close.
+     */
+    public void close();
+    
+    /**
      * Inits git repository.
      *
      * @throws GitException if repository exists.

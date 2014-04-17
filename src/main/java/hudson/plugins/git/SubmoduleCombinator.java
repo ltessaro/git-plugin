@@ -71,12 +71,16 @@ public class SubmoduleCombinator {
             File subdir = new File(workspace, submodule.getFile());
             IGitAPI subGit = new GitAPI(git.getGitExe(), new FilePath(subdir), listener, git.getEnvironment());
 
-            GitUtils gu = new GitUtils(listener, subGit);
-            Collection<Revision> items = gu.filterTipBranches(gu.getAllBranchRevisions());
+            try {
+                GitUtils gu = new GitUtils(listener, subGit);
+                Collection<Revision> items = gu.filterTipBranches(gu.getAllBranchRevisions());
 
-            filterRevisions(submodule.getFile(), items);
+                filterRevisions(submodule.getFile(), items);
 
-            moduleBranches.put(submodule, items);
+                moduleBranches.put(submodule, items);
+            } finally {
+                git.close();
+            }
         }
 
         // Remove any uninteresting branches
@@ -195,8 +199,12 @@ public class SubmoduleCombinator {
             File subdir = new File(workspace, submodule.getFile());
             IGitAPI subGit = new GitAPI(git.getGitExe(), new FilePath(subdir), listener, git.getEnvironment());
 
-            subGit.checkout(branch.sha1.name());
-            git.add(submodule.file);
+            try {
+                subGit.checkout(branch.sha1.name());
+                git.add(submodule.file);
+            } finally {
+                subGit.close();
+            }
 
         }
 
