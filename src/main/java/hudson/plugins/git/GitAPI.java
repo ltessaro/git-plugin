@@ -100,7 +100,7 @@ public class GitAPI implements IGitAPI {
 	 * After close, no executable call, e.g., <code>commit</code> is allowed.
 	 */
 	public void close() {
-        if (hasGitRepo()) {
+        if (jGitDelegate != null) {
             jGitDelegate.close();
             jGitDelegate = null;
         }
