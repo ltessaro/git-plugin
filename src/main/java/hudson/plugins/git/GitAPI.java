@@ -259,7 +259,9 @@ public class GitAPI implements IGitAPI {
     public void clean() throws GitException {
         verifyGitRepository();
         try {
-            jGitDelegate.clean().call();
+            jGitDelegate.clean()
+                .setCleanDirectories(true)
+                .call();
         } catch (Exception ex) {
             throw new GitException(ex);
         }  
